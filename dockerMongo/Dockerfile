@@ -7,9 +7,6 @@
 # Pull base image.
 FROM dockerfile/ubuntu
 
-ENV http_proxy http://10.30.91.87:8080
-ENV https_proxy http://10.30.91.87:8080
-
 # Install MongoDB.
 RUN \
   apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 && \

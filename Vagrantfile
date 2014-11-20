@@ -28,22 +28,9 @@ Vagrant.configure("2") do |config|
 # Require a recent version of vagrant otherwise some have reported errors setting host names on boxes
 Vagrant.require_version ">= 1.6.5"
 
-=begin
-    if Vagrant.has_plugin?("vagrant-proxyconf")
-        config.proxy.http     = "http://proxy.blrl.sap.corp:8080"
-        config.proxy.https    = "http://proxy.blcl.sap.corp:8080"
-        config.proxy.no_proxy = "sap.corp,.mo.sap.corp,10.*,localhost,127.0.0.1,0.0.0.0,moo-repo,169.254.169.254,repo,mo-88b10555b"
-    end
-=end
-
 	# Expose Mongodb database settings
     config.vm.network "forwarded_port", guest: 27017, host: 27017
     config.vm.network "forwarded_port", guest: 28017, host: 28017
-
-	# Virtualbox customization
-	config.vm.provider :virtualbox do |virtualbox, override|
-	   virtualbox.customize ["modifyvm", :id, "--memory", "1024", "--cpus", "1", "--pae", "on", "--hwvirtex", "on", "--ioapic", "on", "--name", "SAP-Docker"]
-	end
   
     # Ubuntu
     config.vm.box = "precise64"
