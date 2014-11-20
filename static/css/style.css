@@ -1,0 +1,149 @@
+@charset "UTF-8";
+/*
+ * jQuery File Upload Plugin CSS Example 8.8.2
+ * https://github.com/blueimp/jQuery-File-Upload
+ *
+ * Copyright 2013, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+
+body {
+  padding-top: 60px;
+}
+
+#dragandrophandler
+{
+  border:2px dotted #0B85A1;
+  width:400px;
+  color:#92AAB0;
+  text-align:left;
+  vertical-align:middle;
+  padding:10px 10px 10px 10px;
+  margin-bottom:10px;
+  font-size:200%;
+}
+
+.progressBar {
+  width: 200px;
+  height: 22px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  display:inline-block;
+  margin:0px 10px 5px 5px;
+  vertical-align:top;
+}
+
+.progressBar div {
+  height: 100%;
+  color: #fff;
+  text-align: right;
+  line-height: 22px; /* same as #progressBar height if we want text middle aligned */
+  width: 0;
+  background-color: #0ba1b5; border-radius: 3px;
+}
+.statusbar
+{
+  border-top:1px solid #A9CCD1;
+  min-height:25px;
+  width:700px;
+  padding:10px 10px 0px 10px;
+  vertical-align:top;
+}
+.statusbar:nth-child(odd){
+  background:#EBEFF0;
+}
+.filename
+{
+  display:inline-block;
+  vertical-align:top;
+  width:250px;
+}
+.filesize
+{
+  display:inline-block;
+  vertical-align:top;
+  color:#30693D;
+  width:100px;
+  margin-left:10px;
+  margin-right:5px;
+}
+.abort{
+  background-color:#A8352F;
+  -moz-border-radius:4px;
+  -webkit-border-radius:4px;
+  border-radius:4px;display:inline-block;
+  color:#fff;
+  font-family:arial;font-size:13px;font-weight:normal;
+  padding:4px 15px;
+  cursor:pointer;
+  vertical-align:top
+}
+
+div.hidden {
+  visibility: hidden;
+}
+
+.thumb {
+  height: 75px;
+  border: 1px solid #000;
+  margin: 10px 5px 10px 0;
+}
+.page        {
+  bottom:0;
+  padding-top:200px;
+  position:absolute;
+  text-align:center;
+  top:0;
+  width:100%;
+}
+
+.page h1 	{ font-size:60px; }
+.page a     { margin-top:50px; }
+
+/* PAGES (specific colors for each page)
+============================================================================= */
+.page-home 		{ background:#00D0BC; color:#00907c; }
+
+@keyframes rotateFall {
+  0% 		{ transform: rotateZ(0deg); }
+  20% 	{ transform: rotateZ(10deg); animation-timing-function: ease-out; }
+  40% 	{ transform: rotateZ(17deg); }
+  60% 	{ transform: rotateZ(16deg); }
+  100% 	{ transform: translateY(100%) rotateZ(17deg); }
+}
+
+/* slide in from the bottom */
+@keyframes slideOutLeft {
+  to 		{ transform: translateX(-100%); }
+}
+
+/* rotate out newspaper */
+@keyframes rotateOutNewspaper {
+  to 		{ transform: translateZ(-3000px) rotateZ(360deg); opacity: 0; }
+}
+
+/* entering animations --------------------------------------- */
+/* scale up */
+@keyframes scaleUp {
+  from 	{ opacity: 0.3; -webkit-transform: scale(0.8); }
+}
+
+/* slide in from the right */
+@keyframes slideInRight {
+  from 	{ transform:translateX(100%); }
+  to 		{ transform: translateX(0); }
+}
+
+/* slide in from the bottom */
+@keyframes slideInUp {
+  from 	{ transform:translateY(100%); }
+  to 		{ transform: translateY(0); }
+}
+
+.ng-enter 			{ animation: scaleUp 0.5s both ease-in; z-index: 8888; }
+.ng-leave 			{ animation: slideOutLeft 0.5s both ease-in; z-index: 9999; }
+

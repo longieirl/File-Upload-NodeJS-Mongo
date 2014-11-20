@@ -1,0 +1,31 @@
+# .gitignore
+.DS_Store
+
+# Node.js #
+###########
+node_modules/
+static/tmp/
+
+# IDE #
+#######
+*.iml
+.idea
+.vagrant
+.project
+.grunt
+
+# Logs
+logs
+*.log
+
+# Compiled binary addons (http://nodejs.org/api/addons.html)
+build/Release
+
+# AWS #
+#######
+.elasticbeanstalk/
+
+# Runtime data
+pids
+*.pid
+*.seed

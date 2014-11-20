@@ -1,0 +1,5 @@
+<ul ng:controller="TaskListCtrl">
+    <li ng:repeat="task in task">
+        <a href='#/tasks/{{ task.taskId }}'>{{ task.taskId }}</a>
+    </li>
+</ul>

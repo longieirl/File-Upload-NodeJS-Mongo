@@ -1,0 +1,21 @@
+<div class="form-left-col">
+
+    <div class="well">
+        <h1>Task: {{taskItem.taskId}}</h1>
+        <h5>Created: {{taskItem.createdAt}}</h5>
+        <h5>Image Count: {{taskItem.imgs.length}}</h5>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-3" ng-repeat="img in taskItem.imgs">
+                <a href="/api/task/{{taskItem.taskId}}/image/{{img.imgId}}">
+                    <img src="/api/task/{{taskItem.taskId}}/image/{{img.imgId}}" alt="{{img.imgId}}" class="img-rounded" width="125"
+                         height="125">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>

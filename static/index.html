@@ -1,0 +1,256 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Upload Example</title>
+    <!-- Bootstrap styles -->
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
+    <link rel="stylesheet" href="./css/jquery.fileupload.css">
+    <!-- Generic page styles -->
+    <link rel="stylesheet" href="./css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body onload="">
+<div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target=".navbar-fixed-top .navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">File Upload</a>
+            <a class="navbar-brand" href="tasks.html">Tasks</a>
+        </div>
+
+    </div>
+</div>
+<div class="container">
+    <div class="clearfix">
+
+        <div id="notcompatible" class="hidden">
+            Your browser may not support the functionality on this page.
+        </div>
+
+        <!-- The fileinput-button span is used to style the file input field as button -->
+        <form id="uploadForm" enctype="multipart/form-data" action="/api/upload" method="post">
+    <span class="btn btn-success fileinput-button">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span>Select files...</span>
+        <!-- The file input field used as target for the file upload widget -->
+        <input id="userFileInput" type="file" name="userFile" multiple="multiple" multiple>
+    </span>
+        </form>
+
+        <div id="success" class="hidden">
+            <div class="alert alert-success">
+                <a href="#" class="close" data-dismiss="alert">&times;</a>
+                <strong>Success!</strong> All files have been uploaded and optimised successfully
+            </div>
+        </div>
+
+        <!-- The container for the uploaded files -->
+        <div id="files" class="files"></div>
+
+
+        <div id="dragandrophandler">Drag & Drop Files Here</div>
+
+        <div id="page-header" class="page-header">
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Demo Notes</h3>
+            </div>
+            <div class="panel-body">
+                <ul>
+                    <li>There is a browser compatibility check to ensure HTML5 functionality is supported.
+                    </li>
+                    <li>The maximum file size for uploads in this demo is <strong>5 MB</strong> with a maximum of five
+                        images per request.
+                    </li>
+                    <li>Only image files (<strong>PNG</strong>) are allowed in this demo
+                    </li>
+                    <li>Uploaded files will be compressed during upload and attached to new task
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
+<script src="./js/jquery.min.js"></script>
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="./js/jquery.iframe-transport.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="./js/upload.js"></script>
+<script type="text/javascript">
+    window.isCompatible = function () {
+        return !!(window.File) && !!(window.FileReader)
+                && !!(window.FileList) && !!(window.Blob);
+    };
+    if (isCompatible() === false) {
+        document.getElementById('notcompatible').className = '';
+    }
+</script>
+<script>
+    function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
+
+        // Loop through the FileList and render image files as thumbnails.
+        for (var i = 0, f; f = files[i]; i++) {
+
+            // Only process image files.
+            if (!f.type.match('image.*')) {
+                continue;
+            }
+
+            var reader = new FileReader();
+
+            // Closure to capture the file information.
+            reader.onload = (function (theFile) {
+                return function (e) {
+                    // Render thumbnail.
+                    var span = document.createElement('span');
+                    span.innerHTML = ['<img class="thumb" src="',
+                        e.target.result, '" title="',
+                        escape(theFile.name), '"/>'].join('');
+                    document.getElementById('files')
+                            .insertBefore(span, null);
+                };
+            })(f);
+
+            // Read in the image file as a data URL.
+            reader.readAsDataURL(f);
+        }
+    }
+
+    document.getElementById('userFileInput').addEventListener('change',
+            handleFileSelect, false);
+</script>
+<script>
+    function sendFilesToServer(formData, status) {
+        var uploadURL = "/api/upload"; //Upload URL
+        var jqXHR = $.ajax({
+            xhr: function () {
+                var xhrobj = $.ajaxSettings.xhr();
+                if (xhrobj.upload) {
+                    xhrobj.upload.addEventListener('progress', function (event) {
+                        var percent = 0;
+                        var position = event.loaded || event.position;
+                        var total = event.total;
+                        if (event.lengthComputable) {
+                            percent = Math.ceil(position / total * 100);
+                        }
+                        //Set progress
+                        status.setProgress(percent);
+                    }, false);
+                }
+                return xhrobj;
+            },
+            url: uploadURL,
+            type: "POST",
+            contentType: false,
+            processData: false,
+            cache: false,
+            data: formData,
+            success: function (data) {
+                status.setProgress(100);
+
+                $("#status1").append("File(s) upload Done<br>");
+            }
+        });
+
+        status.setAbort(jqXHR);
+    }
+
+    var rowCount = 0;
+    function createStatusbar(obj) {
+        rowCount++;
+        var row = "odd";
+        if (rowCount % 2 == 0) row = "even";
+        this.statusbar = $("<div class='statusbar " + row + "'></div>");
+        this.filename = $("<div class='filename'></div>").appendTo(this.statusbar);
+        this.size = $("<div class='filesize'></div>").appendTo(this.statusbar);
+        this.progressBar = $("<div class='progressBar'><div></div></div>").appendTo(this.statusbar);
+        this.abort = $("<div class='abort'>Abort</div>").appendTo(this.statusbar);
+        obj.after(this.statusbar);
+
+        this.setFileNameSize = function (name, size) {
+            var sizeStr = "";
+            var sizeKB = size / 1024;
+            if (parseInt(sizeKB) > 1024) {
+                var sizeMB = sizeKB / 1024;
+                sizeStr = sizeMB.toFixed(2) + " MB";
+            }
+            else {
+                sizeStr = sizeKB.toFixed(2) + " KB";
+            }
+
+            this.filename.html(name);
+            this.size.html(sizeStr);
+        }
+        this.setProgress = function (progress) {
+            var progressBarWidth = progress * this.progressBar.width() / 100;
+            this.progressBar.find('div').animate({width: progressBarWidth}, 10).html(progress + "% ");
+            if (parseInt(progress) >= 100) {
+                this.abort.hide();
+            }
+        }
+        this.setAbort = function (jqxhr) {
+            var sb = this.statusbar;
+            this.abort.click(function () {
+                jqxhr.abort();
+                sb.hide();
+            });
+        }
+    }
+
+    function handleFileUpload(files, obj) {
+
+        var formData = new FormData();
+        for (var i = 0; i < files.length; i++) {
+            formData.append('userFile', files[i], files[i].name);
+            var status = new createStatusbar(obj); //Using this we can set progress.
+            status.setFileNameSize(files[i].name, files[i].size);
+        }
+        sendFilesToServer(formData, status);
+    }
+    $(document).ready(function () {
+        var obj = $("#dragandrophandler");
+        obj.on('dragenter', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            $(this).css('border', '2px solid #0B85A1');
+        });
+        obj.on('dragover', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+        obj.on('drop', function (e) {
+            $(this).css('border', '2px dotted #0B85A1');
+            e.preventDefault();
+            var files = e.originalEvent.dataTransfer.files;
+
+            //We need to send dropped files to Server
+            handleFileUpload(files, obj);
+        });
+        $(document).on('dragenter', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+        $(document).on('dragover', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            obj.css('border', '2px dotted #0B85A1');
+        });
+        $(document).on('drop', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+
+    });
+</script>
+</body>
+</html>
